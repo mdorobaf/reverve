@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.9.0/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="h-screen flex flex-col justify-center items-center bg-slate-500">
+    <div
+      class="w-[55rem] grid grid-cols-2 gap-2 shadow p-2 rounded-lg bg-white"
+    >
+      <h1 class="text-center mb-4 col-span-2">رزرو میز رستوران</h1>
+      <button class="btn mb-4" onclick="table_create.showModal()">اضافه کردن میز جدید</button>
+      <form action="{{ url_for('reserve') }}" method="post" class="col-span-2 grid grid-cols-2 gap-4">
+        {% for table in tables %}
+        <div class="w-full border rounded-lg p-4 text-center hover:bg-gray-200" onclick="user_info.showModal()">
+            <label for="table_id_{{table.id}}">میز شماره {{ table.number }} - ظرفیت میز {{ table.capacity }}</label>
+            <input type="radio" id="table_id_{{table.id}}" name="table_id" value="{{table.id}}" class="hidden" >
+        </div>
+        {% endfor %}
+        <dialog id="user_info" class="modal">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg"></h3>
+              <div class="py-4">
+                    <div class="">
+                        <label for="name">نام مشتری:</label>
+                        <input type="text" id="name" name="name" required class="input input-bordered w-full">
+                    </div>
+                    <div class="">
+                        <label for="phone">شماره تماس مشتری:</label>
+                        <input type="text" id="phone" name="phone" required class="input input-bordered w-full">
+                    </div>
+                    <div class="">
+                        <label for="date">تاریخ رزرو میز:</label>
+                        <input type="date" id="date" name="date" required class="input input-bordered w-full">
+                    </div>
+                    <div class="">
+                        <label for="time">زمان رزرو میز:</label>
+                        <input type="time" id="time" name="time" required class="input input-bordered w-full">
+                    </div>
+                  <button type="submit" class="btn btn-success mt-4">ثبت درخواست</button>
+
+              </div>
+              <div class="modal-action">
+                <form method="dialog">
+                  <!-- if there is a button in form, it will close the modal -->
+                  <button class="btn">بستن</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+      </form>
+
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-success col-span-2">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      
+      <dialog id="table_create" class="modal">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg"></h3>
+          <div class="py-4">
+            <form action="{{url_for('create_table')}}" method="POST">
+                <div class="">
+                    <label for="number">شماره میز:</label>
+                    <input type="number" id="number" name="number" required class="input input-bordered w-full">
+                </div>
+                <div class="">
+                    <label for="capacity">ظرفیت میز:</label>
+                    <input type="number" id="capacity" name="capacity" required class="input input-bordered w-full">
+                </div>
+              <button class="btn" type="submit">ارسال اطلاعات</button>
+
+            </form>
+          </div>
+          <div class="modal-action">
+            <form method="dialog">
+              <!-- if there is a button in form, it will close the modal -->
+              <button class="btn">بستن</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    </div>
+  </body>
+</html>
